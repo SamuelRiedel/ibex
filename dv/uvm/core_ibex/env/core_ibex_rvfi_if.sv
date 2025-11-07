@@ -41,6 +41,7 @@ interface core_ibex_rvfi_if(input logic clk);
   logic        ext_ic_scr_key_valid;
 
   logic [15:0] ext_expanded_insn;
+  logic        ext_expanded_insn_last;
 
   clocking monitor_cb @(posedge clk);
     input reset;
@@ -77,6 +78,7 @@ interface core_ibex_rvfi_if(input logic clk);
     input ext_ic_scr_key_valid;
     input ext_irq_valid;
     input ext_expanded_insn;
+    input ext_expanded_insn_last;
   endclocking
 
   task automatic wait_clks(input int num);

@@ -22,6 +22,7 @@ class ibex_rvfi_seq_item extends uvm_sequence_item;
   bit        ic_scr_key_valid;
 
   bit [15:0] expanded_insn;
+  bit        expanded_insn_last;
 
   `uvm_object_utils_begin(ibex_rvfi_seq_item)
     `uvm_field_int (trap, UVM_DEFAULT)
@@ -40,6 +41,7 @@ class ibex_rvfi_seq_item extends uvm_sequence_item;
     `uvm_field_sarray_int (mhpmcountersh, UVM_DEFAULT)
     `uvm_field_int (ic_scr_key_valid, UVM_DEFAULT)
     `uvm_field_int (expanded_insn, UVM_DEFAULT)
+    `uvm_field_int (expanded_insn_last, UVM_DEFAULT)
   `uvm_object_utils_end
 
   `uvm_object_new
