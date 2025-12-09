@@ -910,8 +910,7 @@ module ibex_id_stage #(
     assign multicycle_done = lsu_req_dec ? ~stall_mem : ex_valid_i;
 
     // Is a memory access ongoing that isn't finishing this cycle
-    assign outstanding_memory_access = (outstanding_load_wb_i | outstanding_store_wb_i) &
-                                       ~lsu_resp_valid_i;
+    assign outstanding_memory_access = outstanding_load_wb_i | outstanding_store_wb_i;
 
     // Can start a new memory access if any previous one has finished or is finishing
     // This signal is only used to gate lsu_req, which is also gated by instr_executing, which
