@@ -539,8 +539,8 @@ module ibex_load_store_unit #(
   assign addr_last_o   = addr_last_q;
 
   // Signal a load or store error depending on the transaction type outstanding
-  assign load_err_o      = data_or_pmp_err & ~data_we_q & lsu_resp_valid_o;
-  assign store_err_o     = data_or_pmp_err &  data_we_q & lsu_resp_valid_o;
+  assign load_err_o  = ~data_we_q & ((lsu_resp_valid_o & data_bus_err_i) | lsu_err_q | pmp_err_q);
+  assign store_err_o =  data_we_q & ((lsu_resp_valid_o & data_bus_err_i) | lsu_err_q | pmp_err_q);
   // Integrity errors are their own category for timing reasons. load_err_o is factored directly
   // into data_req_o to enable synchronous exception on load errors without performance loss (An
   // upcoming load cannot request until the current load has seen its response, so the earliest
