@@ -914,7 +914,10 @@ module ibex_id_stage #(
                                        ~lsu_resp_valid_i;
 
     // Can start a new memory access if any previous one has finished or is finishing
-    assign data_req_allowed = ~outstanding_memory_access;
+    // This signal is only used to gate lsu_req, which is also gated by instr_executing, which
+    // itself is again gated by outstanding_memory_access, so this signal could be simplified to be
+    // tied to one in the `gen_stall_mem` case, because it will not make any functional difference.
+    assign data_req_allowed = 1'b1;
 
     // Instruction won't execute because:
     // - There is a pending exception in writeback
