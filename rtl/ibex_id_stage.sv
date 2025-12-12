@@ -219,6 +219,7 @@ module ibex_id_stage #(
   logic        instr_first_cycle;
   logic        instr_executing_spec;
   logic        instr_executing;
+  logic        instr_executing_lsu;
   logic        instr_done;
   logic        controller_run;
   logic        stall_ld_hz;
@@ -639,7 +640,7 @@ module ibex_id_stage #(
 
   assign multdiv_en_dec   = mult_en_dec | div_en_dec;
 
-  assign lsu_req         = instr_executing ? data_req_allowed & lsu_req_dec  : 1'b0;
+  assign lsu_req         = instr_executing_lsu ? data_req_allowed & lsu_req_dec  : 1'b0;
   assign mult_en_id      = instr_executing ? mult_en_dec                     : 1'b0;
   assign div_en_id       = instr_executing ? div_en_dec                      : 1'b0;
 
@@ -904,13 +905,16 @@ module ibex_id_stage #(
     logic rf_rd_b_hz;
 
     logic outstanding_memory_access;
+    logic outstanding_memory_access_lsu;
 
     logic instr_kill;
+    logic instr_kill_lsu;
 
     assign multicycle_done = lsu_req_dec ? ~stall_mem : ex_valid_i;
 
     // Is a memory access ongoing that isn't finishing this cycle
-    assign outstanding_memory_access = outstanding_load_wb_i | outstanding_store_wb_i;
+    assign outstanding_memory_access = (outstanding_load_wb_i | outstanding_store_wb_i) & ~lsu_resp_valid_i;
+    assign outstanding_memory_access_lsu = (outstanding_load_wb_i | outstanding_store_wb_i);
 
     // Can start a new memory access if any previous one has finished or is finishing
     // This signal is only used to gate lsu_req, which is also gated by instr_executing, which
@@ -930,6 +934,9 @@ module ibex_id_stage #(
                         wb_exception      |
                         id_exception      |
                         ~controller_run;
+
+    assign instr_kill_lsu = instr_fetch_err_i |
+                            ~controller_run;
 
     // With writeback stage instructions must be prevented from executing if there is:
     // - A load hazard
@@ -956,6 +963,11 @@ module ibex_id_stage #(
                              ~instr_kill                &
                              ~stall_ld_hz               &
                              ~outstanding_memory_access;
+
+    assign instr_executing_lsu = instr_valid_i   &
+                                 ~instr_kill_lsu &
+                                 ~stall_ld_hz    &
+                                 ~outstanding_memory_access_lsu;
 
     `ASSERT(IbexExecutingSpecIfExecuting, instr_executing |-> instr_executing_spec)
 
