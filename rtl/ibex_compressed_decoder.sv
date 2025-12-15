@@ -28,7 +28,7 @@ module ibex_compressed_decoder #(
 );
   import ibex_pkg::*;
 
-  // valid_i indicates if instr_i is valid and is used for assertions only.
+  // valid_i indicates if instr_i is valid and is used for assertions only in some configurations.
   // The following signal is used to avoid possible lint errors.
   logic unused_valid;
   assign unused_valid = valid_i;
@@ -544,7 +544,7 @@ module ibex_compressed_decoder #(
                       end else if (cm_rlist_d == 5'd4) begin
                         // Only `ra` has to be stored, which is done in this cycle.  Proceed by
                         // decrementing SP.
-                        if (id_in_ready_i) begin
+                        if (valid_i && id_in_ready_i) begin
                           cm_state_d = CmPushDecrSp;
                         end
                       end else begin
@@ -556,7 +556,7 @@ module ibex_compressed_decoder #(
                         // offset from 2 onwards in CmPushStoreReg next cycle.
                         cm_sp_offset_d = 5'd2;
                         // Proceed with storing registers.
-                        if (id_in_ready_i) begin
+                        if (valid_i && id_in_ready_i) begin
                           cm_state_d = CmPushStoreReg;
                         end
                       end
@@ -612,7 +612,7 @@ module ibex_compressed_decoder #(
                       end else if (cm_rlist_d == 5'd4) begin
                         // Only `ra` has to be loaded, which is done in this cycle.  Proceed by
                         // incrementing SP.
-                        if (id_in_ready_i) begin
+                        if (valid_i && id_in_ready_i) begin
                           cm_state_d = CmPopIncrSp;
                         end
                       end else begin
@@ -621,7 +621,7 @@ module ibex_compressed_decoder #(
                         cm_rlist_d -= 5'd1;
                         cm_sp_offset_d -= 5'd1;
                         // Proceed with loading registers.
-                        if (id_in_ready_i) begin
+                        if (valid_i && id_in_ready_i) begin
                           cm_state_d = CmPopLoadReg;
                         end
                       end
@@ -688,7 +688,7 @@ module ibex_compressed_decoder #(
                           // No cm.mvsa01 instruction is active yet; start a new one.
                           // Move a0 to register indicated by r1s'.
                           instr_o = cm_mvsa01(.a01(1'b0), .rs(instr_i[9:7]));
-                          if (id_in_ready_i) begin
+                          if (valid_i && id_in_ready_i) begin
                             cm_state_d = CmMvSecondReg;
                           end
                         end
@@ -714,7 +714,7 @@ module ibex_compressed_decoder #(
                           // No cm.mva01s instruction is active yet; start a new one.
                           // Move register indicated by r1s' into a0.
                           instr_o = cm_mva01s(.rs(instr_i[9:7]), .a01(1'b0));
-                          if (id_in_ready_i) begin
+                          if (valid_i && id_in_ready_i) begin
                             cm_state_d = CmMvSecondReg;
                           end
                         end
