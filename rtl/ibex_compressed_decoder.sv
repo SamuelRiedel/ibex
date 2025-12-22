@@ -784,11 +784,11 @@ module ibex_compressed_decoder #(
 
   assign is_compressed_o = (instr_i[1:0] != 2'b11);
 
-  always_ff @(posedge clk_i, negedge rst_ni) begin
+  always_ff @(posedge clk_i or negedge rst_ni) begin
     if (!rst_ni) begin
       cm_state_q <= CmIdle;
-      // The following regs don't need to be reset as they get assigned before first usage:
-      // cm_rlist_q, cm_sp_offset_q
+      cm_sp_offset_q <= '0;
+      cm_rlist_q <= '0;
     end else begin
       cm_rlist_q     <= cm_rlist_d;
       cm_sp_offset_q <= cm_sp_offset_d;
