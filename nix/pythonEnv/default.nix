@@ -29,6 +29,12 @@
         pkgs.lib.composeManyExtensions [
           inputs.pyproject-build-systems.overlays.default
           (inputs.uv2nix_hammer_overrides.overrides pkgs)
+
+          (final: prev: {
+            jsonschema2md = prev.jsonschema2md.overrideAttrs (old: {
+              nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ final.babel ];
+            });
+          })
         ]
       );
 
