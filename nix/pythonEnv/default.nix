@@ -32,7 +32,10 @@
 
           (final: prev: {
             jsonschema2md = prev.jsonschema2md.overrideAttrs (old: {
-              nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ final.babel ];
+              nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [
+                final.poetry-core
+                final.babel
+              ];
             });
           })
         ]
