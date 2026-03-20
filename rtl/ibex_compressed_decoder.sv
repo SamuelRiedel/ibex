@@ -25,6 +25,7 @@ module ibex_compressed_decoder #(
   output logic [31:0]          instr_o,
   output logic                 is_compressed_o,
   output ibex_pkg::instr_exp_e gets_expanded_o,
+  output logic                 zcmp_atomic_tail_o,
   input  logic                 flush_expanded_i,
   output logic                 illegal_instr_o
 );
@@ -795,6 +796,13 @@ module ibex_compressed_decoder #(
   end
 
   assign is_compressed_o = (instr_i[1:0] != 2'b11);
+
+  // The load phase of cm.popret/cm.popretz is replayable, but once the sequence reaches the
+  // stack-pointer adjustment it must complete atomically with the trailing a0/ret operations.
+  assign zcmp_atomic_tail_o =
+      ((cm_state_q == CmPopIncrSp) && (instr_i[12:8] inside {5'b11100, 5'b11110})) ||
+      (cm_state_q == CmPopZeroA0) ||
+      (cm_state_q == CmPopRetRa);
 
   always_ff @(posedge clk_i or negedge rst_ni) begin
     if (!rst_ni) begin

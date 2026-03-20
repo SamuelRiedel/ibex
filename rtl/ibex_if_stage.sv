@@ -76,6 +76,8 @@ module ibex_if_stage import ibex_pkg::*; #(
                                                                 // compressed decoder
   output logic [15:0]                 instr_expanded_id_o,      // the instruction that is currently
                                                                 // getting expanded
+  output logic                        zcmp_atomic_tail_o,       // expanded popret/popretz tail
+                                                                // must not be interrupted
   output logic                        instr_bp_taken_o,         // instruction was predicted to be
                                                                 // a taken branch
   output logic                        instr_fetch_err_o,        // bus error on fetch
@@ -427,6 +429,8 @@ module ibex_if_stage import ibex_pkg::*; #(
     .instr_o        (instr_decompressed),
     .is_compressed_o(instr_is_compressed),
     .gets_expanded_o(instr_gets_expanded),
+    .zcmp_atomic_tail_o(zcmp_atomic_tail_o),
+    .flush_expanded_i(flush_expanded),
     .flush_expanded_i(flush_expanded),
     .illegal_instr_o(illegal_c_insn)
   );

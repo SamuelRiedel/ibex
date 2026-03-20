@@ -40,6 +40,7 @@ module ibex_id_stage #(
   input  logic [15:0]               instr_rdata_c_i,       // from IF-ID pipeline registers
   input  logic                      instr_is_compressed_i,
   input  logic                      instr_bp_taken_i,
+  input  logic                      zcmp_atomic_tail_i,
   output logic                      instr_req_o,
   output logic                      instr_first_cycle_id_o,
   output logic                      instr_valid_clear_o,   // kill instr in IF-ID reg
@@ -568,6 +569,7 @@ module ibex_id_stage #(
     .instr_compressed_i     (instr_rdata_c_i),
     .instr_is_compressed_i  (instr_is_compressed_i),
     .instr_bp_taken_i       (instr_bp_taken_i),
+    .zcmp_atomic_tail_i     (zcmp_atomic_tail_i),
     .instr_fetch_err_i      (instr_fetch_err_i),
     .instr_fetch_err_plus2_i(instr_fetch_err_plus2_i),
     .pc_id_i                (pc_id_i),

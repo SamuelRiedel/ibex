@@ -35,6 +35,7 @@ module ibex_controller #(
   input  logic [15:0]           instr_compressed_i,      // instr compressed data for mtval
   input  logic                  instr_is_compressed_i,   // instr is compressed
   input  logic                  instr_bp_taken_i,        // instr was predicted taken branch
+  input  logic                  zcmp_atomic_tail_i,      // expanded popret/popretz commit tail
   input  logic                  instr_fetch_err_i,       // instr has error
   input  logic                  instr_fetch_err_plus2_i, // instr error is x32
   input  logic [31:0]           pc_id_i,                 // instr address
@@ -234,7 +235,7 @@ module ibex_controller #(
   assign special_req = special_req_pc_change | special_req_flush_only;
 
   // Is there an instruction in ID or WB that has yet to complete?
-  assign id_wb_pending = instr_valid_i | ~ready_wb_i;
+  assign id_wb_pending = instr_valid_i | ~ready_wb_i | zcmp_atomic_tail_i;
 
   // Logic to determine which exception takes priority where multiple are possible.
   if (WritebackStage) begin : g_wb_exceptions

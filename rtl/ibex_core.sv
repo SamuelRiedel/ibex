@@ -190,6 +190,7 @@ module ibex_core import ibex_pkg::*; #(
   logic        instr_is_compressed_id;
   instr_exp_e  instr_gets_expanded_id;
   logic [15:0] instr_expanded_id;
+  logic        zcmp_atomic_tail;
   logic        instr_perf_count_id;
   logic        instr_bp_taken_id;
   logic        instr_fetch_err;                // Bus error on instr fetch
@@ -479,6 +480,7 @@ module ibex_core import ibex_pkg::*; #(
     .instr_is_compressed_id_o(instr_is_compressed_id),
     .instr_gets_expanded_id_o(instr_gets_expanded_id),
     .instr_expanded_id_o     (instr_expanded_id),
+    .zcmp_atomic_tail_o      (zcmp_atomic_tail),
     .instr_bp_taken_o        (instr_bp_taken_id),
     .instr_fetch_err_o       (instr_fetch_err),
     .instr_fetch_err_plus2_o (instr_fetch_err_plus2),
@@ -575,6 +577,7 @@ module ibex_core import ibex_pkg::*; #(
     .instr_rdata_c_i      (instr_rdata_c_id),
     .instr_is_compressed_i(instr_is_compressed_id),
     .instr_bp_taken_i     (instr_bp_taken_id),
+    .zcmp_atomic_tail_i   (zcmp_atomic_tail),
 
     // Jumps and branches
     .branch_decision_i(branch_decision),
