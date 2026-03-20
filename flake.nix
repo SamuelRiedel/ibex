@@ -102,7 +102,15 @@
         pythonEnv = import ./nix/pythonEnv {inherit inputs pkgs;};
 
         # lowRISC fork of Spike used as a cosimulation model for Ibex Verification
-        spike = inputs.lowrisc-nix.packages.${system}.spike-ibex-cosim;
+        # Override revision to latest one
+        spike = (inputs.lowrisc-nix.packages.${system}.spike-ibex-cosim).overrideAttrs (oldAttrs: {
+          src = pkgs.fetchFromGitHub {
+            owner = "lowRISC";
+            repo = "riscv-isa-sim";
+            rev = "4b97396656485a129119deaec2ba35e5bf354841";
+            sha256 = "sha256-oF2poKMYoYXytqo/t6eqngJgrr4WFHvKj/cKsGQ88DQ=";
+          };
+        });
 
         # Currently we don't build the riscv-toolchain from src, we use a github release
         # See https://github.com/lowRISC/lowrisc-nix/blob/main/pkgs/lowrisc-toolchain-gcc-rv32imcb.nix
