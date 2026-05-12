@@ -105,10 +105,10 @@
         # Override revision to latest one
         spike = (inputs.lowrisc-nix.packages.${system}.spike-ibex-cosim).overrideAttrs (oldAttrs: {
           src = pkgs.fetchFromGitHub {
-            owner = "lowRISC";
+            owner = "samuelriedel";
             repo = "riscv-isa-sim";
-            rev = "4b97396656485a129119deaec2ba35e5bf354841";
-            sha256 = "sha256-oF2poKMYoYXytqo/t6eqngJgrr4WFHvKj/cKsGQ88DQ=";
+            rev = "c480e521f1d2c485cd609e2d7d27fe2d2c2f30a3";
+            sha256 = "sha256-X5KTP0mCudCniwPXiM0urDu6d9gem9jfPbomFUY26mg=";
           };
         });
 
